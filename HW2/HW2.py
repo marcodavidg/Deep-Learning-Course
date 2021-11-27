@@ -34,7 +34,7 @@ def plot_feature_maps(model, input_image, number_layers, section1 = True):
             feature_map_model = tf.keras.models.Model(inputs=model.inputs, outputs=output_layer)
             feature_maps = feature_map_model.predict(input_image)
             for filter in range(8):
-                plt.subplot(4, 2, filter + 1)
+                plt.subplot(2, 4, filter + 1)
                 image_array = feature_maps[:, :, :, filter]
                 image = image_array.reshape((feature_maps.shape[1], feature_maps.shape[2]))
                 plt.imshow(image, cmap='gray')
@@ -219,19 +219,20 @@ def section2():  # SECTION 2 OF THE ASSIGNMENT
 
 
     model = models.Sequential()
-    model.add(layers.Conv2D(16, (3, 3), activation='relu', kernel_regularizer='l2', strides=(1, 1), padding="same", input_shape=(32, 32, 3)))
+    model.add(layers.Conv2D(16, (3, 3), activation='relu', strides=(1, 1), padding="same", input_shape=(32, 32, 3)))
     model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(32, (3, 3), activation='relu', kernel_regularizer='l2', strides=(1, 1), padding="same"))
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', strides=(1, 1), padding="same"))
     model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu', kernel_regularizer='l2', strides=(1, 1), padding="same"))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu', strides=(1, 1), padding="same"))
 
     model.add(layers.Flatten())
-    model.add(layers.Dense(64, activation='relu', kernel_regularizer='l2'))
-    model.add(layers.Dense(128, activation='relu', kernel_regularizer='l2'))
-    model.add(layers.Dense(10, kernel_regularizer='l2'))
+    model.add(layers.Dense(64, activation='relu'))
+    model.add(layers.Dense(128, activation='relu'))
+    model.add(layers.Dense(10))
 
     model.summary()
-    model.compile(optimizer='adam',
+    adam_opt = tf.keras.optimizers.Adam(learning_rate=0.001)
+    model.compile(optimizer=adam_opt,
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=['accuracy'])
 
